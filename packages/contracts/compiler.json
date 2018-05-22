@@ -25,6 +25,7 @@
         "ERC20Proxy",
         "ERC721Proxy",
         "Exchange",
+        "Forwarder",
         "MixinAuthorizable",
         "MultiSigWallet",
         "MultiSigWalletWithTimeLock",
