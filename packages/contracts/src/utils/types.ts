@@ -98,6 +98,7 @@ export enum ContractName {
     AccountLevels = 'AccountLevels',
     EtherDelta = 'EtherDelta',
     Arbitrage = 'Arbitrage',
+    TestLibAssetProxyDecoder = 'TestLibAssetProxyDecoder',
     TestAssetProxyDispatcher = 'TestAssetProxyDispatcher',
     TestLibMem = 'TestLibMem',
     TestLibs = 'TestLibs',
