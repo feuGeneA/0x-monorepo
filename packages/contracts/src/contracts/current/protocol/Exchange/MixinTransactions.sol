@@ -20,8 +20,10 @@ pragma solidity ^0.4.24;
 import "./mixins/MSignatureValidator.sol";
 import "./mixins/MTransactions.sol";
 import "./libs/LibExchangeErrors.sol";
+import "./libs/LibEIP712.sol";
 
 contract MixinTransactions is
+    LibEIP712,
     LibExchangeErrors,
     MSignatureValidator,
     MTransactions
@@ -33,6 +35,30 @@ contract MixinTransactions is
 
     // Address of current transaction signer
     address public currentContextAddress;
+
+    bytes32 constant EXECUTE_TRANSACTION_SCHEMA_HASH = keccak256(
+        "ExecuteTransaction(",
+        "uint256 salt,",
+        "address signer,",
+        "bytes data",
+        ")"
+    );
+
+    function getExecuteTransactionHash(uint256 salt, address signer, bytes data)
+        internal
+        view
+        returns (bytes32 executeTransactionHash)
+    {
+        executeTransactionHash = createEIP712Message(
+            keccak256(
+                EXECUTE_TRANSACTION_SCHEMA_HASH,
+                salt,
+                bytes32(signer),
+                keccak256(data)
+            )
+        );
+        return executeTransactionHash;
+    }
 
     /// @dev Executes an exchange method call in the context of signer.
     /// @param salt Arbitrary number to ensure uniqueness of transaction hash.
@@ -53,13 +79,7 @@ contract MixinTransactions is
             REENTRANCY_NOT_ALLOWED
         );
 
-        // Calculate transaction hash
-        bytes32 transactionHash = keccak256(
-            address(this),
-            signer,
-            salt,
-            data
-        );
+        bytes32 transactionHash = getExecuteTransactionHash(salt, signer, data);
 
         // Validate transaction has not been executed
         require(

@@ -18,13 +18,13 @@
 
 pragma solidity ^0.4.24;
 
-contract LibOrder {
+import "./LibEIP712.sol";
 
-    bytes32 constant DOMAIN_SEPARATOR_SCHEMA_HASH = keccak256(
-        "DomainSeparator(address contract)"
-    );
+contract LibOrder is
+    LibEIP712
+{
 
-    bytes32 constant ORDER_SCHEMA_HASH = keccak256(
+    bytes32 constant EIP712_ORDER_SCHEMA_HASH = keccak256(
         "Order(",
         "address makerAddress,",
         "address takerAddress,",
@@ -37,7 +37,7 @@ contract LibOrder {
         "uint256 expirationTimeSeconds,",
         "uint256 salt,",
         "bytes makerAssetData,",
-        "bytes takerAssetData,",
+        "bytes takerAssetData",
         ")"
     );
 
@@ -73,17 +73,13 @@ contract LibOrder {
         view
         returns (bytes32 orderHash)
     {
-        // TODO: EIP712 is not finalized yet
-        // Source: https://github.com/ethereum/EIPs/pull/712
-        orderHash = keccak256(
-            DOMAIN_SEPARATOR_SCHEMA_HASH,
-            keccak256(address(this)),
-            ORDER_SCHEMA_HASH,
+        orderHash = createEIP712Message(
             keccak256(
-                order.makerAddress,
-                order.takerAddress,
-                order.feeRecipientAddress,
-                order.senderAddress,
+                EIP712_ORDER_SCHEMA_HASH,
+                bytes32(order.makerAddress),
+                bytes32(order.takerAddress),
+                bytes32(order.feeRecipientAddress),
+                bytes32(order.senderAddress),
                 order.makerAssetAmount,
                 order.takerAssetAmount,
                 order.makerFee,

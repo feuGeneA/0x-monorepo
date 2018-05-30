@@ -10,6 +10,7 @@ import { artifacts } from '../../src/utils/artifacts';
 import { assetProxyUtils } from '../../src/utils/asset_proxy_utils';
 import { chaiSetup } from '../../src/utils/chai_setup';
 import { constants } from '../../src/utils/constants';
+import { EIP712Utils } from '../../src/utils/eip712_utils';
 import { OrderFactory } from '../../src/utils/order_factory';
 import { orderUtils } from '../../src/utils/order_utils';
 import { provider, txDefaults, web3Wrapper } from '../../src/utils/web3_wrapper';
@@ -58,13 +59,17 @@ describe('Exchange libs', () => {
         describe('getOrderSchema', () => {
             it('should output the correct order schema hash', async () => {
                 const orderSchema = await libs.getOrderSchemaHash.callAsync();
-                expect(orderUtils.getOrderSchemaHex()).to.be.equal(orderSchema);
+                const orderSchemaBuffer = orderUtils.getOrderSchemaBuffer();
+                const schemaHashHex = `0x${orderSchemaBuffer.toString('hex')}`;
+                expect(schemaHashHex).to.be.equal(orderSchema);
             });
         });
         describe('getDomainSeparatorSchema', () => {
             it('should output the correct domain separator schema hash', async () => {
                 const domainSeparatorSchema = await libs.getDomainSeparatorSchemaHash.callAsync();
-                expect(orderUtils.getDomainSeparatorSchemaHex()).to.be.equal(domainSeparatorSchema);
+                const domainSchemaBuffer = EIP712Utils.getDomainSeparatorSchemaBuffer();
+                const schemaHashHex = `0x${domainSchemaBuffer.toString('hex')}`;
+                expect(schemaHashHex).to.be.equal(domainSeparatorSchema);
             });
         });
         describe('getOrderHash', () => {
