@@ -20,14 +20,12 @@ pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
 import "../../utils/LibBytes/LibBytes.sol";
-import "../../utils/LibAssetProxyDecoder/LibAssetProxyDecoder.sol";
 import "../../tokens/ERC20Token/IERC20Token.sol";
 import "./MixinAssetProxy.sol";
 import "./MixinAuthorizable.sol";
 
 contract ERC20Proxy is
     LibBytes,
-    LibAssetProxyDecoder,
     MixinAssetProxy,
     MixinAuthorizable
 {
@@ -36,7 +34,7 @@ contract ERC20Proxy is
     uint8 constant PROXY_ID = 1;
 
     // Revert reasons
-    string constant INVALID_METADATA_LENGTH = "Metadata must have a length of 21.";
+    string constant INVALID_ASSET_DATA_LENGTH = "Asset data must have a length of 21.";
     string constant TRANSFER_FAILED = "Transfer failed.";
     string constant PROXY_ID_MISMATCH = "Proxy id in metadata does not match this proxy id.";
 
@@ -57,7 +55,7 @@ contract ERC20Proxy is
         (
             uint8 proxyId,
             address token
-        ) = decodeERC20Data(assetData);
+        ) = decodeERC20AssetData(assetData);
 
         // Data must be intended for this proxy.
         uint256 length = assetMetadata.length;
@@ -83,5 +81,24 @@ contract ERC20Proxy is
         returns (uint8)
     {
         return PROXY_ID;
+    }
+
+    /// @dev Decodes ERC20 Asset Proxy data
+    function decodeERC20AssetData(bytes memory assetData)
+        internal
+        pure
+        returns (
+            uint8 proxyId,
+            address token
+        )
+    {
+        require(
+            assetData.length == 21,
+            INVALID_ASSET_DATA_LENGTH
+        );
+        proxyId = uint8(assetData[0]);
+        token = readAddress(assetData, 1);
+
+        return (proxyId, token);
     }
 }
