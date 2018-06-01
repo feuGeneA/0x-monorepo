@@ -51,7 +51,7 @@ contract ERC721Proxy is
     )
         internal
     {
-        // Decode proxy data.
+        // Decode asset data.
         (
             uint8 proxyId,
             address token,
@@ -120,7 +120,7 @@ contract ERC721Proxy is
             INVALID_ASSET_DATA_LENGTH
         );
 
-        // Decode asset data
+        // Decode asset data.
         proxyId = uint8(assetData[0]);
         token = readAddress(assetData, 1);
         tokenId = readUint256(assetData, 21);
