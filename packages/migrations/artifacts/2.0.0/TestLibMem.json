@@ -65,7 +65,7 @@
 	"sourceTreeHashHex": "0x5faf0c5cf077c90a79db501fc1095e0a3dc53cb31322d2365c3c34dd2f2558f8",
 	"compiler": {
 		"name": "solc",
-		"version": "0.4.24",
+		"version": "soljson-v0.4.24+commit.e67f0147.js",
 		"settings": {
 			"optimizer": {
 				"enabled": true,

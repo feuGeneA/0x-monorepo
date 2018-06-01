@@ -1,4 +1,5 @@
 import { BlockchainLifecycle, devConstants, web3Factory } from '@0xproject/dev-utils';
+import { generatePseudoRandomSalt } from '@0xproject/order-utils';
 import { AssetProxyId } from '@0xproject/types';
 import { BigNumber } from '@0xproject/utils';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
@@ -71,7 +72,7 @@ describe('LibBytes', () => {
         shortTestBytesAsBuffer = Buffer.concat([encodedShortDataLength, encodedShortData]);
         shortTestBytes = ethUtil.bufferToHex(shortTestBytesAsBuffer);
         // Create test bytes one word in length
-        wordOfData = ethUtil.bufferToHex(assetProxyUtils.encodeUint256(ZeroEx.generatePseudoRandomSalt()));
+        wordOfData = ethUtil.bufferToHex(assetProxyUtils.encodeUint256(generatePseudoRandomSalt()));
         const encodedWordOfData = ethUtil.toBuffer(wordOfData);
         const wordOfDataLength = new BigNumber(encodedWordOfData.byteLength);
         const encodedWordOfDataLength = assetProxyUtils.encodeUint256(wordOfDataLength);
@@ -310,7 +311,6 @@ describe('LibBytes', () => {
     });
     */
 
-=======
     describe('readFirst4', () => {
         it('should revert if byte array has a length < 4', async () => {
             const byteArrayLessThan4Bytes = '0x010101';
