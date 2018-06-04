@@ -13,7 +13,7 @@
     "scripts": {
         "watch": "tsc -w",
         "prebuild": "run-s clean generate_contract_wrappers",
-        "generate_contract_wrappers": "abi-gen --abis 'src/compact_artifacts/@(Exchange|Token|TokenTransferProxy|EtherToken|TokenRegistry|DummyToken).json' --template ../contract_templates/contract.handlebars --partials '../contract_templates/partials/**/*.handlebars' --output src/contract_wrappers/generated --backend ethers && prettier --write 'src/contract_wrappers/generated/**.ts'",
+        "generate_contract_wrappers": "abi-gen --abis 'src/compact_artifacts/@(Exchange|Token|TokenTransferProxy|EtherToken|TokenRegistry|DummyToken).json' --template ../contract_templates/contract.handlebars --partials '../contract_templates/partials/**/*.handlebars' --output src/contract_wrappers/generated --backend ethers",
         "lint": "tslint --project .",
         "test:circleci": "run-s test:coverage",
         "test": "yarn run_mocha",
@@ -68,7 +68,6 @@
         "npm-run-all": "^4.1.2",
         "nyc": "^11.0.1",
         "opn-cli": "^3.1.0",
-        "prettier": "^1.11.1",
         "shx": "^0.2.2",
         "sinon": "^4.0.0",
         "source-map-support": "^0.5.0",
