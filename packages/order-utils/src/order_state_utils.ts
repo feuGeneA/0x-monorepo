@@ -116,7 +116,7 @@ export class OrderStateUtils {
         const transferrableMakerTokenAmount = BigNumber.min([makerProxyAllowance, makerBalance]);
         const transferrableFeeTokenAmount = BigNumber.min([makerFeeProxyAllowance, makerFeeBalance]);
 
-        const zrxAssetData = assetProxyUtils.encodeERC20ProxyData(zrxTokenAddress);
+        const zrxAssetData = assetProxyUtils.encodeERC20AssetData(zrxTokenAddress);
         const isMakerTokenZRX = signedOrder.makerAssetData === zrxAssetData;
         const remainingFillableCalculator = new RemainingFillableCalculator(
             signedOrder,
