@@ -70,14 +70,32 @@ function registerPartials(partialsGlob: string): void {
     }
 }
 
-function writeOutputFile(name: string, renderedTsCode: string): void {
+function makeOutputFilePath(name: string): string {
     let fileName = toSnakeCase(name);
     if (fileName === 'z_r_x_token') {
         fileName = 'zrx_token';
     }
-    const filePath = `${args.output}/${fileName}.ts`;
+    return `${args.output}/${fileName}.ts`;
+}
+
+function writeOutputFile(name: string, renderedTsCode: string): void {
+    const filePath = makeOutputFilePath(name);
     fs.writeFileSync(filePath, renderedTsCode);
     logUtils.log(`Created: ${chalk.bold(filePath)}`);
+}
+
+function isOutputFileUpToDate(abiFile: string, outFile: string): boolean {
+    const abiFileModTimeMs = fs.statSync(abiFile).mtimeMs;
+    try {
+        const outFileModTimeMs = fs.statSync(makeOutputFilePath(outFile)).mtimeMs;
+        return outFileModTimeMs >= abiFileModTimeMs;
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            return false;
+        } else {
+            throw err;
+        }
+    }
 }
 
 Handlebars.registerHelper('parameterType', utils.solTypeToTsType.bind(utils, ParamKind.Input, args.backend));
@@ -116,6 +134,11 @@ for (const abiFileName of abiFileNames) {
             `Please make sure your ABI file is either an array with ABI entries or a truffle artifact or 0x sol-compiler artifact`,
         );
         process.exit(1);
+    }
+
+    if (isOutputFileUpToDate(abiFileName, namedContent.name)) {
+        logUtils.log('Already up to date: ' + makeOutputFilePath(namedContent.name));
+        continue;
     }
 
     let ctor = ABI.find((abi: AbiDefinition) => abi.type === ABI_TYPE_CONSTRUCTOR) as ConstructorAbi;
