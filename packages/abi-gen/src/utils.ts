@@ -2,6 +2,7 @@ import { AbiType, ConstructorAbi, DataItem } from 'ethereum-types';
 import * as fs from 'fs';
 import * as _ from 'lodash';
 import * as path from 'path';
+import toSnakeCase = require('to-snake-case');
 
 import { ContractsBackend, ParamKind } from './types';
 
@@ -91,5 +92,28 @@ export const utils = {
             payable: false,
             inputs: [],
         };
+    },
+    makeOutputFileName(name: string): string {
+        let fileName = toSnakeCase(name);
+        if (fileName === 'z_r_x_token') {
+            fileName = 'zrx_token';
+        }
+        return fileName;
+    },
+    writeOutputFile(filePath: string, renderedTsCode: string): void {
+        fs.writeFileSync(filePath, renderedTsCode);
+    },
+    isOutputFileUpToDate(abiFile: string, outputFile: string): boolean {
+        const abiFileModTimeMs = fs.statSync(abiFile).mtimeMs;
+        try {
+            const outFileModTimeMs = fs.statSync(outputFile).mtimeMs;
+            return outFileModTimeMs > abiFileModTimeMs;
+        } catch (err) {
+            if (err.code === 'ENOENT') {
+                return false;
+            } else {
+                throw err;
+            }
+        }
     },
 };
