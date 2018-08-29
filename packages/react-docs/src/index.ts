@@ -21,9 +21,14 @@ export {
     DocSection,
     DoxityDocObj,
     DocsMenu,
+    Event,
     SupportedDocJson,
     TypeDocNode,
     GeneratedDocJson,
+    SolidityMethod,
+    Parameter,
+    Type as ReactDocsType,
+    TypeDocTypes,
 } from './types';
 
 export { constants } from './utils/constants';
